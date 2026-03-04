@@ -4,3 +4,788 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kirby ★ Dream Land</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --pink: #FF6EB4;
+      --hot-pink: #FF3D9A;
+      --soft-pink: #FFB3D9;
+      --lavender: #C89BE0;
+      --sky: #87CEEB;
+      --deep-sky: #4FA8D5;
+      --yellow: #FFE566;
+      --mint: #98E8C1;
+      --white: #FFF9FC;
+      --dark: #3D1A4A;
+      --shadow: rgba(255, 110, 180, 0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--white);
+      color: var(--dark);
+      overflow-x: hidden;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23FF6EB4' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E") 12 12, auto;
+    }
+
+    /* ─── FLOATING STARS ─── */
+    .stars {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 8px; height: 8px;
+      background: var(--yellow);
+      clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+      animation: floatStar linear infinite;
+      opacity: 0.7;
+    }
+    @keyframes floatStar {
+      0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 0.7; }
+      90%  { opacity: 0.7; }
+      100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 3px solid var(--soft-pink);
+      padding: 12px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+    .nav-logo {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.8rem;
+      color: var(--hot-pink);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo span { font-size: 1.6rem; }
+    nav ul {
+      list-style: none;
+      display: flex; gap: 28px;
+    }
+    nav ul li a {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      color: var(--dark);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+    nav ul li a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 3px;
+      background: var(--pink);
+      border-radius: 99px;
+      transition: width 0.3s;
+    }
+    nav ul li a:hover { color: var(--hot-pink); }
+    nav ul li a:hover::after { width: 100%; }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #fce4f5 0%, #d4eeff 50%, #e8f9f0 100%);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 40px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-clouds {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 999px;
+      opacity: 0.7;
+      animation: drift linear infinite;
+    }
+    @keyframes drift {
+      from { transform: translateX(-200px); }
+      to   { transform: translateX(110vw);  }
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+
+    /* Big Kirby SVG */
+    .kirby-hero {
+      width: 220px; height: 220px;
+      margin: 0 auto 30px;
+      animation: bobbing 2.5s ease-in-out infinite;
+      filter: drop-shadow(0 20px 40px rgba(255,110,180,0.5));
+    }
+    @keyframes bobbing {
+      0%,100% { transform: translateY(0) rotate(-3deg); }
+      50%      { transform: translateY(-18px) rotate(3deg); }
+    }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(3rem, 8vw, 6rem);
+      color: var(--hot-pink);
+      line-height: 1;
+      text-shadow: 4px 4px 0 rgba(255,61,154,0.2);
+      letter-spacing: 2px;
+    }
+    h1 .outline {
+      -webkit-text-stroke: 3px var(--hot-pink);
+      color: transparent;
+    }
+    .hero-sub {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--lavender);
+      margin: 14px 0 32px;
+      letter-spacing: 1px;
+    }
+    .hero-btn {
+      display: inline-block;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.2rem;
+      background: var(--hot-pink);
+      color: white;
+      padding: 14px 40px;
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow: 0 6px 0 #c2006e, 0 12px 30px rgba(255,61,154,0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .hero-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 0 #c2006e, 0 18px 40px rgba(255,61,154,0.4);
+    }
+    .hero-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 #c2006e;
+    }
+
+    /* ─── SECTIONS SHARED ─── */
+    section {
+      position: relative; z-index: 1;
+      padding: 100px 40px;
+    }
+    .section-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--lavender);
+      margin-bottom: 60px;
+    }
+    .pill-divider {
+      display: flex; justify-content: center; gap: 8px;
+      margin-bottom: 60px;
+    }
+    .pill-divider span {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      display: block;
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      background: linear-gradient(180deg, #fff9fc 0%, #fde8f5 100%);
+    }
+    #about .section-title { color: var(--hot-pink); }
+    .about-grid {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 40px; align-items: center;
+    }
+    .about-text p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 16px;
+      color: #5a3a6a;
+    }
+    .about-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--soft-pink);
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-weight: 800;
+      color: var(--hot-pink);
+      margin-bottom: 16px;
+    }
+    .kirby-about {
+      display: flex; justify-content: center; align-items: center;
+    }
+    .kirby-about-img {
+      width: 200px;
+      animation: bobbing 3s ease-in-out infinite;
+      filter: drop-shadow(0 12px 28px rgba(255,110,180,0.45));
+    }
+
+    /* ─── ABILITIES ─── */
+    #abilities {
+      background: linear-gradient(160deg, #e8f4ff 0%, #f0e8ff 100%);
+    }
+    #abilities .section-title { color: var(--deep-sky); }
+    .abilities-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 28px;
+    }
+    .ability-card {
+      background: white;
+      border-radius: 28px;
+      padding: 36px 24px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(100,80,200,0.1);
+      border: 3px solid transparent;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .ability-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--card-grad);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 0;
+    }
+    .ability-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      border-color: var(--card-color);
+      box-shadow: 0 16px 48px rgba(100,80,200,0.18);
+    }
+    .ability-card:hover::before { opacity: 0.06; }
+    .ability-icon {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+      display: block;
+      position: relative; z-index: 1;
+      animation: iconBounce 3s ease-in-out infinite;
+    }
+    @keyframes iconBounce {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.12) rotate(5deg); }
+    }
+    .ability-card h3 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: var(--card-color);
+      margin-bottom: 10px;
+      position: relative; z-index: 1;
+    }
+    .ability-card p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #7a6a8a;
+      position: relative; z-index: 1;
+    }
+    .ability-card:nth-child(1) { --card-color:#FF6EB4; --card-grad:linear-gradient(135deg,#FF6EB4,#ff3d9a); }
+    .ability-card:nth-child(2) { --card-color:#FF9500; --card-grad:linear-gradient(135deg,#FF9500,#ff6b00); }
+    .ability-card:nth-child(3) { --card-color:#4FA8D5; --card-grad:linear-gradient(135deg,#4FA8D5,#1a7db5); }
+    .ability-card:nth-child(4) { --card-color:#9B59B6; --card-grad:linear-gradient(135deg,#9B59B6,#7d3c98); }
+    .ability-card:nth-child(5) { --card-color:#27AE60; --card-grad:linear-gradient(135deg,#27AE60,#1e8449); }
+    .ability-card:nth-child(6) { --card-color:#E74C3C; --card-grad:linear-gradient(135deg,#E74C3C,#c0392b); }
+
+    /* ─── GAMES ─── */
+    #games {
+      background: linear-gradient(180deg, #fff5e0 0%, #ffe8f0 100%);
+    }
+    #games .section-title { color: var(--yellow); -webkit-text-stroke: 2px #e0a800; }
+    .games-row {
+      max-width: 1100px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+    .game-card {
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 36px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      background: white;
+    }
+    .game-card:hover {
+      transform: translateY(-10px) rotate(-1deg);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    .game-thumb {
+      height: 160px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .game-thumb::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg,transparent 60%,rgba(0,0,0,0.2));
+    }
+    .game-info { padding: 20px 24px 28px; }
+    .game-info h3 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem; margin-bottom: 6px;
+      color: var(--dark);
+    }
+    .game-info p { font-size: 0.88rem; color: #8a7a9a; line-height: 1.5; }
+    .game-tag {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 999px;
+      color: white;
+    }
+
+    /* ─── CHARACTERS ─── */
+    #characters {
+      background: linear-gradient(160deg, #eef9ee 0%, #e8f0ff 100%);
+    }
+    #characters .section-title { color: var(--mint); -webkit-text-stroke: 2px #1ca870; }
+    .chars-grid {
+      max-width: 960px; margin: 0 auto;
+      display: flex; flex-wrap: wrap;
+      gap: 24px; justify-content: center;
+    }
+    .char-chip {
+      display: flex; align-items: center; gap: 14px;
+      background: white;
+      border-radius: 999px;
+      padding: 14px 24px 14px 14px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+      border: 3px solid var(--chip-color);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: default;
+    }
+    .char-chip:hover {
+      transform: scale(1.07);
+      box-shadow: 0 10px 36px rgba(0,0,0,0.13);
+    }
+    .char-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--chip-bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+    .char-name {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      color: var(--chip-color);
+    }
+    .char-role {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #aaa;
+    }
+
+    /* ─── WORLD / DREAMLAND ─── */
+    #world {
+      background: linear-gradient(160deg, #2d1b4e 0%, #1a3a6e 60%, #0d5e6e 100%);
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
+    #world .section-title { color: var(--yellow); }
+    #world .section-sub { color: rgba(255,255,255,0.65); }
+    .world-facts {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 28px;
+    }
+    .fact-card {
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 36px 20px;
+      backdrop-filter: blur(8px);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .fact-card:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateY(-6px);
+    }
+    .fact-number {
+      font-family: 'Fredoka One', cursive;
+      font-size: 3rem;
+      color: var(--yellow);
+      display: block;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .fact-label {
+      font-size: 1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 48px 40px;
+    }
+    footer .footer-logo {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem;
+      color: var(--pink);
+      margin-bottom: 12px;
+    }
+    footer p { font-size: 0.9rem; }
+    footer .hearts { color: var(--pink); font-size: 1.2rem; letter-spacing: 4px; margin-top: 12px; }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 600px) {
+      .about-grid { grid-template-columns: 1fr; }
+      nav ul { gap: 16px; }
+      section { padding: 80px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating stars -->
+<div class="stars" id="stars"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>🌟</span> Kirby Wiki</div>
+  <ul>
+    <li><a href="#about">Quién es</a></li>
+    <li><a href="#abilities">Poderes</a></li>
+    <li><a href="#games">Juegos</a></li>
+    <li><a href="#characters">Personajes</a></li>
+    <li><a href="#world">Dream Land</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-clouds">
+    <div class="cloud" style="width:180px;height:60px;top:15%;animation-duration:28s;animation-delay:-5s;"></div>
+    <div class="cloud" style="width:120px;height:45px;top:30%;animation-duration:22s;animation-delay:-10s;"></div>
+    <div class="cloud" style="width:220px;height:70px;top:60%;animation-duration:34s;animation-delay:-18s;"></div>
+    <div class="cloud" style="width:90px;height:35px;top:75%;animation-duration:18s;animation-delay:-3s;"></div>
+  </div>
+  <div class="hero-content">
+    <!-- Kirby SVG -->
+    <svg class="kirby-hero" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Body -->
+      <ellipse cx="100" cy="115" rx="72" ry="68" fill="#FF9BD2"/>
+      <!-- Face blush -->
+      <ellipse cx="70" cy="128" rx="18" ry="12" fill="#FF6EB4" opacity="0.6"/>
+      <ellipse cx="130" cy="128" rx="18" ry="12" fill="#FF6EB4" opacity="0.6"/>
+      <!-- Eyes -->
+      <ellipse cx="82" cy="105" rx="14" ry="16" fill="#1a1a2e"/>
+      <ellipse cx="118" cy="105" rx="14" ry="16" fill="#1a1a2e"/>
+      <circle cx="78" cy="100" r="5" fill="white"/>
+      <circle cx="114" cy="100" r="5" fill="white"/>
+      <!-- Mouth -->
+      <path d="M 87 125 Q 100 137 113 125" stroke="#c2006e" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- Feet -->
+      <ellipse cx="72" cy="178" rx="26" ry="14" fill="#FF3D9A"/>
+      <ellipse cx="128" cy="178" rx="26" ry="14" fill="#FF3D9A"/>
+      <!-- Arms -->
+      <ellipse cx="32" cy="130" rx="20" ry="14" fill="#FF9BD2" transform="rotate(-30 32 130)"/>
+      <ellipse cx="168" cy="130" rx="20" ry="14" fill="#FF9BD2" transform="rotate(30 168 130)"/>
+    </svg>
+
+    <h1>¡Hola, <span class="outline">Kirby!</span></h1>
+    <p class="hero-sub">★ El héroe rosado de Dream Land ★</p>
+    <a href="#about" class="hero-btn">¡Explorar Dream Land!</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-title">¿Quién es Kirby?</p>
+  <p class="section-sub">El pequeño héroe que protege Dream Land desde 1992</p>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <div class="about-badge">⭐ Protagonista de Nintendo</div>
+      <p>Kirby es un pequeño ser esférico de color rosa que vive en <strong>Dream Land</strong>, ubicado en el planeta Pop Star. A pesar de su apariencia adorable e inocente, es un guerrero increíblemente poderoso.</p>
+      <p>Su habilidad más característica es la de <strong>inhalar a sus enemigos</strong> y copiar sus poderes. Esta mecánica única lo convierte en uno de los personajes más versátiles de los videojuegos.</p>
+      <p>Creado por <strong>Masahiro Sakurai</strong> para HAL Laboratory, Kirby debutó en <em>Kirby's Dream Land</em> para Game Boy en 1992 y desde entonces ha protagonizado decenas de aventuras.</p>
+    </div>
+    <div class="kirby-about">
+      <svg class="kirby-about-img" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <!-- Star wand -->
+        <line x1="155" y1="80" x2="185" y2="50" stroke="#FFE566" stroke-width="6" stroke-linecap="round"/>
+        <polygon points="185,30 190,48 178,48" fill="#FFE566"/>
+        <!-- Body -->
+        <ellipse cx="95" cy="130" rx="72" ry="68" fill="#FF9BD2"/>
+        <ellipse cx="65" cy="143" rx="18" ry="12" fill="#FF6EB4" opacity="0.6"/>
+        <ellipse cx="125" cy="143" rx="18" ry="12" fill="#FF6EB4" opacity="0.6"/>
+        <ellipse cx="77" cy="120" rx="14" ry="16" fill="#1a1a2e"/>
+        <ellipse cx="113" cy="120" rx="14" ry="16" fill="#1a1a2e"/>
+        <circle cx="73" cy="115" r="5" fill="white"/>
+        <circle cx="109" cy="115" r="5" fill="white"/>
+        <path d="M 82 140 Q 95 152 108 140" stroke="#c2006e" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <ellipse cx="67" cy="193" rx="26" ry="14" fill="#FF3D9A"/>
+        <ellipse cx="123" cy="193" rx="26" ry="14" fill="#FF3D9A"/>
+        <!-- raised arm holding star -->
+        <ellipse cx="155" cy="105" rx="18" ry="13" fill="#FF9BD2" transform="rotate(-60 155 105)"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ABILITIES -->
+<section id="abilities">
+  <p class="section-title">Poderes de Copia</p>
+  <p class="section-sub">Al inhalar enemigos, Kirby absorbe sus habilidades únicas</p>
+  <div class="pill-divider">
+    <span style="background:#FF6EB4"></span>
+    <span style="background:#FF9500"></span>
+    <span style="background:#4FA8D5"></span>
+    <span style="background:#9B59B6"></span>
+  </div>
+  <div class="abilities-grid">
+    <div class="ability-card reveal">
+      <span class="ability-icon">🔥</span>
+      <h3>Fuego</h3>
+      <p>Kirby escupe llamas abrasadoras. Puede convertirse en una bola de fuego y arrasar con todo a su paso.</p>
+    </div>
+    <div class="ability-card reveal" style="animation-delay:.1s">
+      <span class="ability-icon">⚔️</span>
+      <h3>Espada</h3>
+      <p>Porta el icónico sombrero verde y empuña una espada con fuertes golpes y elegantes combos.</p>
+    </div>
+    <div class="ability-card reveal" style="animation-delay:.2s">
+      <span class="ability-icon">❄️</span>
+      <h3>Hielo</h3>
+      <p>Congela enemigos con un aliento glacial, creando bloques de hielo para lanzar como proyectiles.</p>
+    </div>
+    <div class="ability-card reveal" style="animation-delay:.3s">
+      <span class="ability-icon">⚡</span>
+      <h3>Rayo</h3>
+      <p>Genera poderosas descargas eléctricas que pueden rebotar en paredes y aturdir rivales.</p>
+    </div>
+    <div class="ability-card reveal" style="animation-delay:.4s">
+      <span class="ability-icon">🌿</span>
+      <h3>Naturaleza</h3>
+      <p>Usa el poder de las plantas para atacar con espinas, semillas y enredaderas naturales.</p>
+    </div>
+    <div class="ability-card reveal" style="animation-delay:.5s">
+      <span class="ability-icon">💥</span>
+      <h3>Bomba</h3>
+      <p>Lanza bombas explosivas en distintas direcciones causando daño en área a múltiples enemigos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GAMES -->
+<section id="games">
+  <p class="section-title">Juegos Principales</p>
+  <p class="section-sub">Más de 30 años de aventuras rosadas</p>
+  <div class="games-row">
+    <div class="game-card reveal">
+      <div class="game-thumb" style="background:linear-gradient(135deg,#87CEEB,#4fa8d5);">☁️</div>
+      <div class="game-info">
+        <h3>Kirby's Dream Land</h3>
+        <p>El debut del héroe rosado en Game Boy. Kirby debe recuperar la comida robada por King Dedede.</p>
+        <span class="game-tag" style="background:#4fa8d5;">1992 · Game Boy</span>
+      </div>
+    </div>
+    <div class="game-card reveal" style="animation-delay:.1s">
+      <div class="game-thumb" style="background:linear-gradient(135deg,#FFB347,#FF6347);">🌅</div>
+      <div class="game-info">
+        <h3>Kirby Super Star</h3>
+        <p>Ocho aventuras en una sola, incluyendo la épica Revenge of Meta Knight. Clásico absoluto.</p>
+        <span class="game-tag" style="background:#FF6347;">1996 · SNES</span>
+      </div>
+    </div>
+    <div class="game-card reveal" style="animation-delay:.2s">
+      <div class="game-thumb" style="background:linear-gradient(135deg,#C89BE0,#9B59B6);">🌌</div>
+      <div class="game-info">
+        <h3>Kirby's Return to Dream Land</h3>
+        <p>Cooperativo para hasta 4 jugadores. Regresa la acción clásica con nuevas Copy Abilities.</p>
+        <span class="game-tag" style="background:#9B59B6;">2011 · Wii</span>
+      </div>
+    </div>
+    <div class="game-card reveal" style="animation-delay:.3s">
+      <div class="game-thumb" style="background:linear-gradient(135deg,#98E8C1,#27AE60);">🌿</div>
+      <div class="game-info">
+        <h3>Kirby and the Forgotten Land</h3>
+        <p>Primera aventura 3D del héroe rosa. Kirby llega a un mundo postapocalíptico lleno de misterios.</p>
+        <span class="game-tag" style="background:#27AE60;">2022 · Switch</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section id="characters">
+  <p class="section-title">Personajes</p>
+  <p class="section-sub">Amigos y rivales del universo de Kirby</p>
+  <div class="chars-grid">
+    <div class="char-chip reveal" style="--chip-color:#FF6EB4;--chip-bg:#ffe0f0;">
+      <div class="char-avatar">🩷</div>
+      <div>
+        <div class="char-name">Kirby</div>
+        <div class="char-role">Héroe principal</div>
+      </div>
+    </div>
+    <div class="char-chip reveal" style="--chip-color:#4FA8D5;--chip-bg:#dff0ff;">
+      <div class="char-avatar">👑</div>
+      <div>
+        <div class="char-name">King Dedede</div>
+        <div class="char-role">Rival / Aliado</div>
+      </div>
+    </div>
+    <div class="char-chip reveal" style="--chip-color:#9B59B6;--chip-bg:#f0e0ff;">
+      <div class="char-avatar">🦋</div>
+      <div>
+        <div class="char-name">Meta Knight</div>
+        <div class="char-role">Guerrero misterioso</div>
+      </div>
+    </div>
+    <div class="char-chip reveal" style="--chip-color:#E74C3C;--chip-bg:#ffe0df;">
+      <div class="char-avatar">😈</div>
+      <div>
+        <div class="char-name">Marx</div>
+        <div class="char-role">Villano traidor</div>
+      </div>
+    </div>
+    <div class="char-chip reveal" style="--chip-color:#FF9500;--chip-bg:#fff0d0;">
+      <div class="char-avatar">🐹</div>
+      <div>
+        <div class="char-name">Bandana Waddle Dee</div>
+        <div class="char-role">Compañero leal</div>
+      </div>
+    </div>
+    <div class="char-chip reveal" style="--chip-color:#27AE60;--chip-bg:#d0ffe0;">
+      <div class="char-avatar">🌿</div>
+      <div>
+        <div class="char-name">Elfilin</div>
+        <div class="char-role">Amigo de Forgotten Land</div>
+      </div>
+    </div>
+    <div class="char-chip reveal" style="--chip-color:#c0392b;--chip-bg:#ffd8d5;">
+      <div class="char-avatar">🌑</div>
+      <div>
+        <div class="char-name">Shadow Kirby</div>
+        <div class="char-role">Contraparte oscura</div>
+      </div>
+    </div>
+    <div class="char-chip reveal" style="--chip-color:#8B4513;--chip-bg:#ffe5cc;">
+      <div class="char-avatar">🪆</div>
+      <div>
+        <div class="char-name">Susie</div>
+        <div class="char-role">CEO de HWC</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORLD / DREAMLAND -->
+<section id="world">
+  <p class="section-title">Dream Land en Números</p>
+  <p class="section-sub">El mundo mágico que Kirby protege con todo su corazón</p>
+  <div class="world-facts">
+    <div class="fact-card reveal">
+      <span class="fact-number">30+</span>
+      <div class="fact-label">Años de historia</div>
+    </div>
+    <div class="fact-card reveal" style="animation-delay:.1s">
+      <span class="fact-number">50+</span>
+      <div class="fact-label">Copy Abilities únicas</div>
+    </div>
+    <div class="fact-card reveal" style="animation-delay:.2s">
+      <span class="fact-number">35+</span>
+      <div class="fact-label">Juegos publicados</div>
+    </div>
+    <div class="fact-card reveal" style="animation-delay:.3s">
+      <span class="fact-number">40M+</span>
+      <div class="fact-label">Copias vendidas</div>
+    </div>
+  </div>
+
+  <!-- Night Kirby -->
+  <div style="margin-top:70px;">
+    <svg viewBox="0 0 200 200" width="150" style="animation: bobbing 2.5s ease-in-out infinite; filter: drop-shadow(0 0 30px rgba(255,230,100,0.7));" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="115" rx="72" ry="68" fill="#9B59B6"/>
+      <ellipse cx="70" cy="128" rx="18" ry="12" fill="#7d3c98" opacity="0.6"/>
+      <ellipse cx="130" cy="128" rx="18" ry="12" fill="#7d3c98" opacity="0.6"/>
+      <ellipse cx="82" cy="105" rx="14" ry="16" fill="#1a1a2e"/>
+      <ellipse cx="118" cy="105" rx="14" ry="16" fill="#1a1a2e"/>
+      <circle cx="78" cy="100" r="5" fill="white"/>
+      <circle cx="114" cy="100" r="5" fill="white"/>
+      <path d="M 87 125 Q 100 137 113 125" stroke="#5b2c6f" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="72" cy="178" rx="26" ry="14" fill="#7d3c98"/>
+      <ellipse cx="128" cy="178" rx="26" ry="14" fill="#7d3c98"/>
+      <ellipse cx="32" cy="130" rx="20" ry="14" fill="#9B59B6" transform="rotate(-30 32 130)"/>
+      <ellipse cx="168" cy="130" rx="20" ry="14" fill="#9B59B6" transform="rotate(30 168 130)"/>
+      <!-- Stars on body -->
+      <text x="85" y="118" font-size="14" fill="#FFE566">✦</text>
+      <text x="108" y="135" font-size="10" fill="#FFE566">✦</text>
+    </svg>
+    <p style="margin-top:20px;font-family:'Fredoka One',cursive;font-size:1.2rem;color:rgba(255,255,255,0.6);">Kirby Galáctica · Defender del cosmos</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">🌟 Kirby Wiki</div>
+  <p>Fan site dedicado al héroe rosa de Dream Land · Kirby es propiedad de Nintendo / HAL Laboratory</p>
+  <div class="hearts">♥ ♥ ♥</div>
+</footer>
+
+<script>
+  // Generate floating stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 30; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 12 + 4;
+    s.style.cssText = `
+      left: ${Math.random() * 100}vw;
+      width: ${size}px; height: ${size}px;
+      animation-duration: ${Math.random() * 15 + 10}s;
+      animation-delay: ${Math.random() * 20}s;
+      opacity: ${Math.random() * 0.5 + 0.3};
+      background: ${['#FFE566','#FF9BD2','#98E8C1','#C89BE0'][Math.floor(Math.random()*4)]};
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
